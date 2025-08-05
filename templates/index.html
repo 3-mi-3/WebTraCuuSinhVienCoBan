@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách sinh viên</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <h1 class="mb-4">📋 Danh sách sinh viên</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="GET" action="{{ url_for('index') }}" class="row g-3 mb-4">
+        <div class="col-auto">
+            <input type="text" name="q" class="form-control" placeholder="Tìm theo mã hoặc tên" value="{{ keyword }}">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-info">🔍 Tìm kiếm</button>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">🔄 Làm mới</a>
+        </div>
+    </form>
+
+    <a href="{{ url_for('add') }}" class="btn btn-primary mb-3">➕ Thêm sinh viên</a>
+
+    <table class="table table-bordered table-hover bg-white">
+        <thead class="table-dark">
+            <tr>
+                <th>Mã SV</th>
+                <th>Họ tên</th>
+                <th>Ngày sinh</th>
+                <th>Lớp</th>
+                <th>Quê quán</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>{{ student.code }}</td>
+                <td>{{ student.name }}</td>
+                <td>{{ student.birthdate }}</td>
+                <td>{{ student.class_name }}</td>
+                <td>{{ student.hometown }}</td>
+                <td>
+                    <a href="{{ url_for('edit', code=student.code) }}" class="btn btn-sm btn-warning">Sửa</a>
+                    <form action="{{ url_for('delete', code=student.code) }}" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Xác nhận xóa?')">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
